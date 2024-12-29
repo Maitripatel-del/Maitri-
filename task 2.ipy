@@ -1,0 +1,50 @@
+import pandas as pd
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import nltk
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Step 1: Download VADER Lexicon
+nltk.download('vader_lexicon')
+
+# Step 2: Load the Dataset
+# Replace this with your dataset or social media data
+data = {
+    'PostID': [1, 2, 3, 4, 5],
+    'PostContent': [
+        "This product is amazing! I absolutely love it.",
+        "I hated the service, it was a disaster!",
+        "The experience was okay, nothing special.",
+        "Wow, the support team is incredibly helpful!",
+        "Not happy with the quality, but the delivery was fast."
+    ]
+}
+df = pd.DataFrame(data)
+
+# Step 3: Initialize VADER Sentiment Analyzer
+analyzer = SentimentIntensityAnalyzer()
+
+# Step 4: Sentiment Scoring Function
+def analyze_sentiment(text):
+    score = analyzer.polarity_scores(text)
+    compound_score = score['compound']  # Compound score for overall sentiment
+    if compound_score > 0.05:
+        return 'Positive'
+    elif compound_score < -0.05:
+        return 'Negative'
+    else:
+        return 'Neutral'
+
+# Apply the sentiment analysis to the dataset
+df['Sentiment'] = df['PostContent'].apply(analyze_sentiment)
+
+# Step 5: Visualize Sentiment Distribution
+plt.figure(figsize=(8, 6))
+sns.countplot(x='Sentiment', data=df, palette='viridis')
+plt.title('Sentiment Distribution in Social Media Posts')
+plt.xlabel('Sentiment')
+plt.ylabel('Count')
+plt.show()
+
+# Step 6: Display the Results
+print(df)
